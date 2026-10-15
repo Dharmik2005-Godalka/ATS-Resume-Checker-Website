@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}New Analysis{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="max-width: 700px;">
+    <h3 class="mb-3">New Analysis</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100">Analyze</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Faculty Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h3 class="mb-0">Faculty Dashboard</h3>
+        <p class="text-muted mb-0">Jobs you have posted</p>
+    </div>
+    <a href="{% url 'add_job' %}" class="btn btn-primary">+ Post New Job</a>
+</div>
+
+<div class="table-responsive bg-white p-3 rounded shadow-sm">
+    <table class="table align-middle mb-0">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Company</th>
+                <th>Status</th>
+                <th>Analyses</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for job in jobs %}
+            <tr>
+                <td>{{ job.title }}</td>
+                <td>{{ job.company }}</td>
+                <td>
+                    {% if job.is_active %}
+                        <span class="badge bg-success">Visible</span>
+                    {% else %}
+                        <span class="badge bg-secondary">Hidden</span>
+                    {% endif %}
+                </td>
+                <td>{{ job.total }}</td>
+                <td>
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'job_results' job.pk %}" class="btn btn-primary btn-sm">View</a>
+                        <form method="post" action="{% url 'toggle_job' job.pk %}" class="m-0">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                {% if job.is_active %}Hide{% else %}Show{% endif %}
+                            </button>
+                        </form>
+                        <form method="post" action="{% url 'delete_job' job.pk %}" class="m-0"
+                              onsubmit="return confirm('Delete this job?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-muted">You have not posted any jobs yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

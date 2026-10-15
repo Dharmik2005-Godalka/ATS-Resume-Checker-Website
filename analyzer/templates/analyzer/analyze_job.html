@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Resume{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="max-width: 700px;">
+    <h3 class="mb-0">{{ job.title }}</h3>
+    <p class="text-primary fw-semibold">{{ job.company }}</p>
+    <p class="text-muted">{{ job.description }}</p>
+    <hr>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary w-100">Analyze My Resume</button>
+    </form>
+    <a href="{% url 'student_dashboard' %}" class="btn btn-link mt-2">Back to jobs</a>
+</div>
+{% endblock %}

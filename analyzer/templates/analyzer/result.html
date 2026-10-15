@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Result{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="max-width: 700px;">
+    <h3>{{ analysis.job_title }}</h3>
+    {% if analysis.job %}<p class="text-primary fw-semibold">{{ analysis.job.company }}</p>{% endif %}
+    <p class="text-muted">Analyzed on {{ analysis.created_at|date:"d M Y, H:i" }}</p>
+    <p><strong>Resume file:</strong> {{ analysis.resume.file.name }}</p>
+    <p><strong>Match:</strong> {{ analysis.match_percentage }}%</p>
+
+    <div class="progress mb-3">
+        <div class="progress-bar" style="width: {{ analysis.match_percentage }}%;">{{ analysis.match_percentage }}%</div>
+    </div>
+
+    {% if not analysis.found_list and not analysis.missing_list %}
+        <p class="text-muted">No known skills were detected in the job description.</p>
+    {% endif %}
+
+    <p><strong>Skills found in your resume:</strong></p>
+    <p>
+        {% for skill in analysis.found_list %}
+            <span class="badge bg-success">{{ skill }}</span>
+        {% empty %}
+            <span class="text-muted">None</span>
+        {% endfor %}
+    </p>
+
+    <p><strong>Skills missing from your resume:</strong></p>
+    <p>
+        {% for skill in analysis.missing_list %}
+            <span class="badge bg-danger">{{ skill }}</span>
+        {% empty %}
+            <span class="text-muted">None</span>
+        {% endfor %}
+    </p>
+
+    <p><strong>Resume sections detected:</strong></p>
+    <p>
+        {% for section in analysis.sections_list %}
+            <span class="badge bg-primary">{{ section }}</span>
+        {% empty %}
+            <span class="text-muted">None</span>
+        {% endfor %}
+    </p>
+
+    <a href="{% url 'new_analysis' %}" class="btn btn-primary">New Analysis</a>
+</div>
+{% endblock %}

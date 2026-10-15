@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<h3 class="mb-1">Welcome, {{ user.username }}</h3>
+<p class="text-muted">Pick a job below and check how well your resume matches it.</p>
+
+<h5 class="mt-4 mb-3">My Recent Analyses</h5>
+<div class="card feature-card mb-5">
+    <div class="list-group list-group-flush">
+        {% for a in recent %}
+        <div class="list-group-item p-3">
+            <div class="row align-items-center g-3">
+                <div class="col-md-4">
+                    <h6 class="mb-0">{{ a.job_title }}</h6>
+                    <small class="text-muted">
+                        {% if a.job %}{{ a.job.company }} &middot; {% endif %}{{ a.created_at|date:"d M Y, H:i" }}
+                    </small>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-between mb-1">
+                        <small class="text-muted">Match</small>
+                        <small class="fw-bold">{{ a.match_percentage }}%</small>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar {% if a.match_percentage >= 70 %}bg-success{% elif a.match_percentage >= 40 %}bg-warning{% else %}bg-danger{% endif %}"
+                             style="width: {{ a.match_percentage }}%;"></div>
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex gap-2 justify-content-md-end">
+                    <a href="{% url 'result' a.pk %}" class="btn btn-primary btn-sm">View</a>
+                    <form method="post" action="{% url 'delete_analysis' a.pk %}" class="m-0"
+                          onsubmit="return confirm('Delete this analysis and its uploaded resume?');">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="list-group-item p-4 text-center text-muted">
+            No analyses yet. Pick a job below to check your first resume.
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<h5 class="mb-3">Available Jobs</h5>
+<div class="row g-3">
+    {% for job in jobs %}
+    <div class="col-md-6">
+        <div class="card feature-card h-100 p-3">
+            <h5 class="mb-0">{{ job.title }}</h5>
+            <p class="text-primary fw-semibold">{{ job.company }}</p>
+            <p class="text-muted">{{ job.description|truncatewords:25 }}</p>
+            <a href="{% url 'analyze_job' job.id %}" class="btn btn-primary mt-auto">Check My Resume</a>
+        </div>
+    </div>
+    {% empty %}
+    <p>No jobs have been posted yet. Please check back later.</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero">
+    <h1>ATS Resume Checker</h1>
+    <p class="lead">Pick a job posted by your faculty, upload your resume, and see how well it matches before you apply.</p>
+    {% if not user.is_authenticated %}
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg me-2">Get Started</a>
+        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Login</a>
+    {% else %}
+        {% if user.is_staff %}
+            <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg">Go to Faculty Dashboard</a>
+        {% else %}
+            <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg">Browse Jobs</a>
+        {% endif %}
+    {% endif %}
+</div>
+
+<div class="row mt-4 g-3">
+    <div class="col-md-4">
+        <div class="card feature-card h-100 p-3">
+            <h5>1. Faculty Posts Jobs</h5>
+            <p class="mb-0">Faculty add job openings with the company name and description.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card feature-card h-100 p-3">
+            <h5>2. Choose a Job &amp; Upload</h5>
+            <p class="mb-0">Pick the job you are interested in and upload your resume as a PDF.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card feature-card h-100 p-3">
+            <h5>3. See Your Results</h5>
+            <p class="mb-0">Get found skills, missing skills and a match percentage, saved in your dashboard.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
